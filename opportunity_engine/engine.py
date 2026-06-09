@@ -11,9 +11,19 @@ from .trend_scanner import TrendScanner, TrendData
 from .demand_validator import DemandValidator
 from .niche_gap_finder import NicheGapFinder
 from .topic_ranker import TopicRanker, RankedTopic
+from .niche_intelligence import NicheIntelligence, NicheAnalysis, NicheProfile
 
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class EnhancedRankedTopic(RankedTopic):
+    """Extended ranked topic with niche intelligence."""
+    niche_profile: Optional[NicheProfile] = None
+    monetization_score: float = 0.5
+    competition_score_raw: float = 0.5
+    final_opportunity_score: float = 0.0
 
 
 @dataclass
@@ -25,6 +35,18 @@ class OpportunityResult:
     average_score: float
     top_niche: str
     recommendations: List[str]
+    niche_analysis: Optional[NicheAnalysis] = None
+    trending_niches: List[str] = None
+    fastest_growing_topics: List[str] = None
+    recommended_formats: List[str] = None
+    
+    def __post_init__(self):
+        if self.trending_niches is None:
+            self.trending_niches = []
+        if self.fastest_growing_topics is None:
+            self.fastest_growing_topics = []
+        if self.recommended_formats is None:
+            self.recommended_formats = []
 
 
 class OpportunityEngine(BaseEngine):
@@ -36,6 +58,7 @@ class OpportunityEngine(BaseEngine):
         self.demand_validator = DemandValidator()
         self.niche_gap_finder = NicheGapFinder()
         self.topic_ranker = TopicRanker()
+        self.niche_intelligence = NicheIntelligence()
     
     async def discover(
         self,
@@ -55,6 +78,15 @@ class OpportunityEngine(BaseEngine):
         """
         try:
             self.logger.info(f"Discovering opportunities for niche: {niche or 'all'}, mode: {mode}")
+            
+            # Step 0: Analyze niche intelligence (NEW)
+            niche_analysis = None
+            if niche:
+                try:
+                    niche_analysis = await self.niche_intelligence.analyze_niche(niche_input=niche)
+                    self.logger.info(f"Niche analysis completed for: {niche}")
+                except Exception as e:
+                    self.logger.warning(f"Niche analysis failed: {e}")
             
             # Step 1: Scan for trends
             trends = await self.trend_scanner.scan(niche=niche, limit=limit * 2)
@@ -80,6 +112,16 @@ class OpportunityEngine(BaseEngine):
             # Generate recommendations
             recommendations = self._generate_recommendations(ranked_topics)
             
+            # Get trending niches and formats from niche analysis
+            trending_niches = []
+            fastest_growing_topics = []
+            recommended_formats = []
+            
+            if niche_analysis:
+                trending_niches = [niche_analysis.niche_profile.niche]
+                fastest_growing_topics = niche_analysis.trending_topics[:5]
+                recommended_formats = niche_analysis.recommended_formats
+            
             return OpportunityResult(
                 ranked_topics=ranked_topics,
                 trends=trends,
@@ -87,6 +129,10 @@ class OpportunityEngine(BaseEngine):
                 average_score=average_score,
                 top_niche=top_niche,
                 recommendations=recommendations,
+                niche_analysis=niche_analysis,
+                trending_niches=trending_niches,
+                fastest_growing_topics=fastest_growing_topics,
+                recommended_formats=recommended_formats,
             )
             
         except Exception as e:
