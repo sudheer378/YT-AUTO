@@ -35,6 +35,8 @@ from config.models import (
 from opportunity_engine import OpportunityEngine
 from core.engines import SEOEngine, ScriptEngine, ThumbnailEngine, VideoAssembler
 from quality_control import QualityEvaluator
+from research_engine import ResearchEngine, ResearchReport
+from channel_intelligence import ChannelAuditor, CompetitorIntelligence
 from utils.logger import get_logger, setup_logger
 
 # Setup logging
@@ -67,6 +69,14 @@ def init_session_state():
         st.session_state.generated_storyboard = None
         st.session_state.quality_metrics = None
         st.session_state.analytics = None
+        # Research & Intelligence
+        st.session_state.research_report = None
+        st.session_state.channel_audit = None
+        st.session_state.competitor_report = None
+        st.session_state.content_calendar = None
+        st.session_state.series_plan = None
+        st.session_state.title_variations = None
+        st.session_state.growth_forecast = None
 
 
 def render_sidebar():
