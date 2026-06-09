@@ -167,18 +167,22 @@ def render_opportunities_tab(opportunity_engine: OpportunityEngine):
     """Render Opportunities tab."""
     st.header("🔥 Content Opportunities")
     
+    # Discovery Mode selection
+    discovery_mode = st.session_state.get("discovery_mode", "Dynamic Opportunity Hunter")
+    
     col1, col2 = st.columns([3, 1])
     with col1:
         search_niche = st.text_input(
             "Search by niche (optional)",
-            placeholder="e.g., AI, Health, Business...",
+            placeholder="e.g., Technology, Health, Business...",
+            value="",
         )
     
     with col2:
         limit = st.number_input("Max results", min_value=1, max_value=20, value=10)
     
     if st.button("🔍 Discover Opportunities", type="primary"):
-        with st.spinner("Scanning for opportunities..."):
+        with st.spinner("Analyzing niche intelligence..."):
             try:
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
@@ -193,9 +197,86 @@ def render_opportunities_tab(opportunity_engine: OpportunityEngine):
                     )
                 
                 st.session_state.current_opportunities = result.ranked_topics
+                st.session_state.last_niche_analysis = result.niche_analysis
                 
                 # Display summary
                 st.success(f"Found {result.total_opportunities} opportunities!")
+                
+                # Show niche analysis panel if available
+                if result.niche_analysis:
+                    st.subheader("🎯 Niche Analysis Panel")
+                    profile = result.niche_analysis.niche_profile
+                    
+                    # Niche hierarchy display
+                    col_a, col_b, col_c = st.columns(3)
+                    with col_a:
+                        st.info(f"**Audience:** {profile.audience}")
+                        st.info(f"**Type:** {profile.audience_type.value.title()}")
+                    with col_b:
+                        st.info(f"**Niche:** {profile.niche.title()}")
+                        st.info(f"**Sub-Niche:** {profile.sub_niche}")
+                    with col_c:
+                        st.info(f"**Topic:** {profile.topic}")
+                        st.info(f"**Format:** {profile.format_recommendation.title()}")
+                    
+                    # Niche Score
+                    st.markdown(f"""
+                    <div class="glass-card" style="padding: 16px; margin: 16px 0;">
+                        <h3 style="color: var(--primary); margin-bottom: 12px;">📊 Niche Score: {profile.niche_score:.1f}/100</h3>
+                        <p style="color: var(--text-muted);">{profile.why_selected}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Scoring factors
+                    col_s1, col_s2 = st.columns(2)
+                    with col_s1:
+                        st.progress(profile.audience_size_score, text=f"Audience Size: {profile.audience_size_score:.0%}")
+                        st.progress(profile.audience_passion_score, text=f"Audience Passion: {profile.audience_passion_score:.0%}")
+                        st.progress(profile.content_depth_score, text=f"Content Depth: {profile.content_depth_score:.0%}")
+                    with col_s2:
+                        st.progress(profile.repeatability_score, text=f"Repeatability: {profile.repeatability_score:.0%}")
+                        st.progress(profile.monetization_potential_score, text=f"Monetization: {profile.monetization_potential_score:.0%}")
+                        st.progress(1.0 - profile.competition_score, text=f"Low Competition: {(1.0 - profile.competition_score):.0%}")
+                    
+                    # SWOT Analysis
+                    col_swot1, col_swot2 = st.columns(2)
+                    with col_swot1:
+                        st.markdown("**✅ Strengths**")
+                        for s in profile.strengths:
+                            st.caption(f"• {s}")
+                        st.markdown("**⚠️ Weaknesses**")
+                        for w in profile.weaknesses:
+                            st.caption(f"• {w}")
+                    with col_swot2:
+                        st.markdown("**🚀 Opportunities**")
+                        for o in profile.opportunities:
+                            st.caption(f"• {o}")
+                        st.markdown("**⛔ Threats**")
+                        for t in profile.threats:
+                            st.caption(f"• {t}")
+                    
+                    # Additional info
+                    col_m1, col_m2, col_m3 = st.columns(3)
+                    with col_m1:
+                        st.metric("Est. Videos Possible", profile.estimated_videos_possible)
+                    with col_m2:
+                        st.metric("Avg Video Length", profile.avg_video_length)
+                    with col_m3:
+                        st.metric("Posting Frequency", profile.posting_frequency)
+                    
+                    # Trending topics from niche analysis
+                    if result.trending_niches or result.fastest_growing_topics:
+                        st.subheader("📈 Today's Opportunities")
+                        if result.trending_niches:
+                            st.markdown(f"**Trending Niches:** {', '.join(result.trending_niches)}")
+                        if result.fastest_growing_topics:
+                            st.markdown("**Fastest Growing Topics:**")
+                            for topic in result.fastest_growing_topics[:5]:
+                                st.caption(f"• {topic}")
+                    
+                    # Recommended formats
+                    if result.recommended_formats:
+                        st.markdown(f"**Recommended Formats:** {', '.join(result.recommended_formats)}")
                 
                 # Show recommendations
                 if result.recommendations:
