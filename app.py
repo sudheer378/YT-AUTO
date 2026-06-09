@@ -42,509 +42,6 @@ setup_logger("yt_auto", "INFO", "yt_auto.log")
 logger = get_logger(__name__)
 
 
-# ============================================================================
-# CUSTOM CSS - PREMIUM DARK FUTURISTIC THEME
-# ============================================================================
-
-def inject_custom_css():
-    """Inject custom CSS for premium UI/UX."""
-    
-    st.markdown("""
-    <style>
-    /* ============================================
-       GLOBAL VARIABLES - COLOR PALETTE
-       ============================================ */
-    :root {
-        --bg-primary: #0B1020;
-        --bg-surface: #121A2E;
-        --bg-card: #16213E;
-        --primary: #00D4FF;
-        --secondary: #7B61FF;
-        --accent: #00FFB2;
-        --text-primary: #FFFFFF;
-        --text-muted: #A0AEC0;
-        --border-color: rgba(0, 212, 255, 0.1);
-        --glow-primary: rgba(0, 212, 255, 0.3);
-        --glow-secondary: rgba(123, 97, 255, 0.3);
-    }
-
-    /* ============================================
-       GLOBAL STYLES
-       ============================================ */
-    .stApp {
-        background: linear-gradient(135deg, #0B1020 0%, #0f1623 100%);
-        min-height: 100vh;
-    }
-    
-    /* Hide default header */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: var(--bg-surface);
-    }
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, var(--primary), var(--secondary));
-        border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, var(--secondary), var(--primary));
-    }
-
-    /* ============================================
-       GLASS CARD COMPONENT
-       ============================================ */
-    .glass-card {
-        background: linear-gradient(
-            135deg,
-            rgba(22, 33, 62, 0.8) 0%,
-            rgba(18, 26, 46, 0.9) 100%
-        );
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: 16px;
-        border: 1px solid rgba(0, 212, 255, 0.1);
-        padding: 24px;
-        margin: 16px 0;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .glass-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(0, 212, 255, 0.3);
-        box-shadow: 
-            0 12px 40px rgba(0, 212, 255, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    /* ============================================
-       GRADIENT BUTTONS
-       ============================================ */
-    .stButton > button {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        color: white !important;
-        border: none;
-        border-radius: 12px;
-        padding: 12px 32px;
-        font-weight: 600;
-        font-size: 14px;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
-        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-    }
-    
-    .stButton > button:active {
-        transform: translateY(0) scale(0.98);
-    }
-    
-    /* Secondary button style */
-    .secondary-btn > button {
-        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
-    }
-
-    /* ============================================
-       SIDEBAR STYLING
-       ============================================ */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(11, 16, 32, 0.95) 0%, rgba(18, 26, 46, 0.95) 100%);
-        backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(0, 212, 255, 0.1);
-    }
-    
-    section[data-testid="stSidebar"] .css-1d391kg {
-        background: transparent;
-    }
-
-    /* Sidebar logo area */
-    .sidebar-logo {
-        text-align: center;
-        padding: 24px 0;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-        margin-bottom: 24px;
-    }
-    
-    .sidebar-logo h1 {
-        font-size: 28px;
-        font-weight: 700;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 0;
-    }
-    
-    .sidebar-logo .version {
-        font-size: 12px;
-        color: var(--text-muted);
-        margin-top: 8px;
-    }
-    
-    .status-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        background: rgba(0, 255, 178, 0.1);
-        border: 1px solid rgba(0, 255, 178, 0.3);
-        border-radius: 20px;
-        font-size: 12px;
-        color: var(--accent);
-        margin-top: 12px;
-    }
-    
-    .status-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--accent);
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-
-    /* ============================================
-       HEADER / HERO SECTION
-       ============================================ */
-    .hero-section {
-        background: linear-gradient(
-            135deg,
-            rgba(22, 33, 62, 0.6) 0%,
-            rgba(11, 16, 32, 0.8) 100%
-        );
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 40px;
-        margin-bottom: 32px;
-        border: 1px solid rgba(0, 212, 255, 0.1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    
-    .hero-title {
-        font-size: 48px;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 0 0 16px 0;
-        letter-spacing: -1px;
-    }
-    
-    .hero-tagline {
-        font-size: 18px;
-        color: var(--text-muted);
-        margin: 0 0 8px 0;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-    
-    .hero-subtitle {
-        font-size: 16px;
-        color: var(--text-muted);
-        margin: 0;
-    }
-    
-    .badge-container {
-        display: flex;
-        gap: 12px;
-        margin-top: 24px;
-        flex-wrap: wrap;
-    }
-    
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: rgba(0, 212, 255, 0.1);
-        border: 1px solid rgba(0, 212, 255, 0.2);
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--primary);
-    }
-    
-    .badge.safe-mode {
-        background: rgba(0, 255, 178, 0.1);
-        border-color: rgba(0, 255, 178, 0.2);
-        color: var(--accent);
-    }
-    
-    .badge.discovery {
-        background: rgba(123, 97, 255, 0.1);
-        border-color: rgba(123, 97, 255, 0.2);
-        color: var(--secondary);
-    }
-
-    /* ============================================
-       METRIC CARDS
-       ============================================ */
-    .metric-card {
-        background: linear-gradient(
-            135deg,
-            rgba(22, 33, 62, 0.7) 0%,
-            rgba(18, 26, 46, 0.8) 100%
-        );
-        backdrop-filter: blur(20px);
-        border-radius: 16px;
-        padding: 24px;
-        border: 1px solid rgba(0, 212, 255, 0.1);
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(0, 212, 255, 0.3);
-        box-shadow: 0 12px 40px rgba(0, 212, 255, 0.15);
-    }
-    
-    .metric-value {
-        font-size: 36px;
-        font-weight: 700;
-        background: linear-gradient(135deg, var(--primary), var(--accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 0;
-    }
-    
-    .metric-label {
-        font-size: 14px;
-        color: var(--text-muted);
-        margin-top: 8px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* ============================================
-       TABS STYLING
-       ============================================ */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        padding: 8px;
-        background: rgba(18, 26, 46, 0.5);
-        border-radius: 12px;
-        margin-bottom: 24px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border: none;
-        color: var(--text-muted);
-        padding: 12px 24px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background: rgba(0, 212, 255, 0.1);
-        color: var(--primary);
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 97, 255, 0.2));
-        color: var(--primary);
-        border: 1px solid rgba(0, 212, 255, 0.3);
-    }
-
-    /* ============================================
-       INPUT FIELDS
-       ============================================ */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div > select,
-    .stNumberInput > div > div > input {
-        background: rgba(11, 16, 32, 0.8);
-        border: 1px solid rgba(0, 212, 255, 0.2);
-        border-radius: 12px;
-        color: var(--text-primary);
-        padding: 12px 16px;
-        transition: all 0.3s ease;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stSelectbox > div > div > select:focus,
-    .stNumberInput > div > div > input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        outline: none;
-    }
-    
-    .stTextInput label,
-    .stSelectbox label,
-    .stNumberInput label {
-        color: var(--text-muted);
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 8px;
-    }
-
-    /* ============================================
-       EXPANDERS
-       ============================================ */
-    .streamlit-expanderHeader {
-        background: rgba(18, 26, 46, 0.5);
-        border: 1px solid rgba(0, 212, 255, 0.1);
-        border-radius: 12px;
-        padding: 16px 20px;
-        transition: all 0.3s ease;
-    }
-    
-    .streamlit-expanderHeader:hover {
-        background: rgba(18, 26, 46, 0.8);
-        border-color: rgba(0, 212, 255, 0.3);
-    }
-    
-    .streamlit-expanderContent {
-        background: rgba(11, 16, 32, 0.5);
-        border: 1px solid rgba(0, 212, 255, 0.1);
-        border-radius: 12px;
-        margin-top: 8px;
-        padding: 20px;
-    }
-
-    /* ============================================
-       CODE BLOCKS
-       ============================================ */
-    pre.stCodeBlock {
-        background: rgba(11, 16, 32, 0.9);
-        border: 1px solid rgba(0, 212, 255, 0.2);
-        border-radius: 12px;
-        padding: 20px;
-    }
-    
-    code {
-        color: var(--accent) !important;
-    }
-
-    /* ============================================
-       PROGRESS BAR
-       ============================================ */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        border-radius: 10px;
-    }
-    
-    .stProgress > div > div {
-        background: rgba(18, 26, 46, 0.8);
-        border-radius: 10px;
-        border: 1px solid rgba(0, 212, 255, 0.1);
-    }
-
-    /* ============================================
-       ALERTS & MESSAGES
-       ============================================ */
-    .stAlert {
-        border-radius: 12px;
-        border: none;
-    }
-    
-    .stSuccess {
-        background: rgba(0, 255, 178, 0.1);
-        border: 1px solid rgba(0, 255, 178, 0.3);
-    }
-    
-    .stError {
-        background: rgba(255, 82, 82, 0.1);
-        border: 1px solid rgba(255, 82, 82, 0.3);
-    }
-    
-    .stWarning {
-        background: rgba(255, 193, 7, 0.1);
-        border: 1px solid rgba(255, 193, 7, 0.3);
-    }
-    
-    .stInfo {
-        background: rgba(0, 212, 255, 0.1);
-        border: 1px solid rgba(0, 212, 255, 0.3);
-    }
-
-    /* ============================================
-       DIVIDER
-       ============================================ */
-    hr {
-        border-color: rgba(0, 212, 255, 0.1) !important;
-    }
-
-    /* ============================================
-       LOADING ANIMATION
-       ============================================ */
-    @keyframes shimmer {
-        0% { background-position: -1000px 0; }
-        100% { background-position: 1000px 0; }
-    }
-    
-    .loading-shimmer {
-        background: linear-gradient(
-            90deg,
-            rgba(0, 212, 255, 0.1) 0%,
-            rgba(0, 212, 255, 0.2) 50%,
-            rgba(0, 212, 255, 0.1) 100%
-        );
-        background-size: 1000px 100%;
-        animation: shimmer 2s infinite;
-        border-radius: 12px;
-        padding: 20px;
-    }
-
-    /* ============================================
-       FOOTER
-       ============================================ */
-    .footer {
-        text-align: center;
-        padding: 32px 0;
-        margin-top: 48px;
-        border-top: 1px solid rgba(0, 212, 255, 0.1);
-        color: var(--text-muted);
-        font-size: 14px;
-    }
-    
-    .footer-heart {
-        color: #ff6b6b;
-    }
-
-    /* ============================================
-       RESPONSIVE ADJUSTMENTS
-       ============================================ */
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 32px;
-        }
-        
-        .hero-tagline {
-            font-size: 14px;
-        }
-        
-        .metric-value {
-            font-size: 28px;
-        }
-        
-        .badge-container {
-            justify-content: center;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
 # Page configuration
 st.set_page_config(
     page_title="YT Auto - Content Intelligence Platform",
@@ -552,9 +49,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-# Inject custom CSS
-inject_custom_css()
 
 
 def init_session_state():
@@ -578,20 +72,9 @@ def init_session_state():
 def render_sidebar():
     """Render sidebar with settings."""
     with st.sidebar:
-        # Logo area
-        st.markdown("""
-        <div class="sidebar-logo">
-            <h1>🎬 YT Auto</h1>
-            <div class="version">v1.0.0</div>
-            <div class="status-indicator">
-                <span class="status-dot"></span>
-                System Online
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.title("⚙️ Settings")
         
         # AI Provider
-        st.markdown("### 🔧 AI Configuration")
         ai_provider = st.selectbox(
             "AI Provider",
             options=["mock", "openai", "anthropic", "google", "ollama"],
@@ -611,7 +94,7 @@ def render_sidebar():
         st.divider()
         
         # Channel Profile
-        st.markdown("### 📺 Channel Profile")
+        st.subheader("📺 Channel Profile")
         channel_name = st.text_input("Channel Name", value="My Channel")
         channel_niche = st.selectbox(
             "Niche",
@@ -639,7 +122,7 @@ def render_sidebar():
         st.divider()
         
         # Discovery Mode
-        st.markdown("### 🔍 Discovery Mode")
+        st.subheader("🔍 Discovery Mode")
         discovery_mode = st.radio(
             "Mode",
             options=["fixed_niche", "dynamic_opportunity"],
@@ -653,30 +136,11 @@ def render_sidebar():
         
         st.divider()
         
-        # Status badges
-        st.markdown("### 📊 Status")
-        col1, col2 = st.columns(2)
-        with col1:
-            if safe_mode:
-                st.markdown("""
-                <div class="badge safe-mode" style="display:inline-flex;">
-                    ✅ Safe Mode
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div class="badge" style="display:inline-flex;">
-                    ⚠️ Standard
-                </div>
-                """, unsafe_allow_html=True)
-        with col2:
-            st.markdown(f"""
-            <div class="badge discovery" style="display:inline-flex;font-size:11px;">
-                {discovery_mode.replace('_', ' ').title()}
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.caption(f"AI: {ai_provider}")
+        # Status
+        st.subheader("📊 Status")
+        st.info(f"Safe Mode: {'✅ On' if safe_mode else '❌ Off'}")
+        st.caption(f"AI Provider: {ai_provider}")
+        st.caption(f"Discovery: {discovery_mode.replace('_', ' ').title()}")
         
         return {
             "ai_provider": ai_provider,
@@ -691,45 +155,7 @@ def render_sidebar():
 
 def render_opportunities_tab(opportunity_engine: OpportunityEngine):
     """Render Opportunities tab."""
-    # Metric cards at top
-    st.markdown("""
-    <div style="margin-bottom: 24px;">
-        <h2 style="margin-bottom: 20px;">🔥 Content Opportunities</h2>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Dashboard metrics
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.markdown("""
-        <div class="metric-card">
-            <p class="metric-value">0</p>
-            <p class="metric-label">Trending Topics</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div class="metric-card">
-            <p class="metric-value">0</p>
-            <p class="metric-label">High Opportunity Niches</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col3:
-        st.markdown("""
-        <div class="metric-card">
-            <p class="metric-value">--</p>
-            <p class="metric-label">Avg Opportunity Score</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col4:
-        st.markdown("""
-        <div class="metric-card">
-            <p class="metric-value">{count}</p>
-            <p class="metric-label">Ideas Generated</p>
-        </div>
-        """.format(count=len(st.session_state.current_opportunities)), unsafe_allow_html=True)
-    
-    st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
+    st.header("🔥 Content Opportunities")
     
     col1, col2 = st.columns([3, 1])
     with col1:
@@ -1098,87 +524,39 @@ def render_research_tab():
 
 def render_analytics_tab():
     """Render Analytics tab."""
-    st.markdown("""
-    <div style="margin-bottom: 24px;">
-        <h2 style="margin-bottom: 20px;">📊 Analytics Dashboard</h2>
-    </div>
-    """, unsafe_allow_html=True)
+    st.header("📊 Analytics Dashboard")
     
     if st.session_state.quality_metrics:
         metrics = st.session_state.quality_metrics
         
-        # KPI Cards
         col1, col2, col3, col4, col5 = st.columns(5)
         
         with col1:
-            st.markdown("""
-            <div class="metric-card">
-                <p class="metric-value">{value}</p>
-                <p class="metric-label">Originality</p>
-            </div>
-            """.format(value=f"{metrics.originality_score:.2f}"), unsafe_allow_html=True)
+            st.metric("Originality", f"{metrics.originality_score:.2f}")
         with col2:
-            st.markdown("""
-            <div class="metric-card">
-                <p class="metric-value">{value}</p>
-                <p class="metric-label">Monetization</p>
-            </div>
-            """.format(value=f"{metrics.monetization_score:.2f}"), unsafe_allow_html=True)
+            st.metric("Monetization", f"{metrics.monetization_score:.2f}")
         with col3:
-            st.markdown("""
-            <div class="metric-card">
-                <p class="metric-value">{value}</p>
-                <p class="metric-label">Safety</p>
-            </div>
-            """.format(value=f"{metrics.safety_score:.2f}"), unsafe_allow_html=True)
+            st.metric("Safety", f"{metrics.safety_score:.2f}")
         with col4:
-            st.markdown("""
-            <div class="metric-card">
-                <p class="metric-value">{value}</p>
-                <p class="metric-label">Sources</p>
-            </div>
-            """.format(value=f"{metrics.source_validation_score:.2f}"), unsafe_allow_html=True)
+            st.metric("Sources", f"{metrics.source_validation_score:.2f}")
         with col5:
-            st.markdown("""
-            <div class="metric-card">
-                <p class="metric-value">{value}</p>
-                <p class="metric-label">Value Add</p>
-            </div>
-            """.format(value=f"{metrics.value_add_score:.2f}"), unsafe_allow_html=True)
+            st.metric("Value Add", f"{metrics.value_add_score:.2f}")
         
-        st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
+        st.divider()
         
-        # Final score in a larger card
-        st.markdown("""
-        <div class="glass-card" style="text-align: center; padding: 32px;">
-            <p style="font-size: 18px; color: var(--text-muted); margin-bottom: 16px;">FINAL CONTENT SCORE</p>
-            <p class="metric-value" style="font-size: 56px;">{score}</p>
-        </div>
-        """.format(score=f"{metrics.final_content_score:.2f}"), unsafe_allow_html=True)
+        st.metric("Final Content Score", f"{metrics.final_content_score:.2f}")
         
         if metrics.issues:
-            st.markdown("### ⚠️ Issues Found")
+            st.warning("**Issues Found:**")
             for issue in metrics.issues:
-                st.markdown(f"""
-                <div class="glass-card" style="border-left: 4px solid #ffc107; padding: 16px 20px;">
-                    ⚠️ {issue}
-                </div>
-                """, unsafe_allow_html=True)
+                st.write(f"⚠️ {issue}")
         
         if metrics.recommendations:
-            st.markdown("### ✅ Recommendations")
+            st.success("**Recommendations:**")
             for rec in metrics.recommendations:
-                st.markdown(f"""
-                <div class="glass-card" style="border-left: 4px solid #00ffb2; padding: 16px 20px;">
-                    ✅ {rec}
-                </div>
-                """, unsafe_allow_html=True)
+                st.write(f"✅ {rec}")
     else:
-        st.markdown("""
-        <div class="glass-card" style="text-align: center; padding: 48px;">
-            <p style="font-size: 18px; color: var(--text-muted);">Generate content first to see analytics</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.info("Generate content first to see analytics")
 
 
 def render_settings_tab(settings: dict):
@@ -1235,29 +613,9 @@ def main():
     # Render sidebar and get settings
     settings = render_sidebar()
     
-    # Hero section
-    st.markdown("""
-    <div class="hero-section">
-        <h1 class="hero-title">🎬 YT Auto</h1>
-        <p class="hero-tagline">Discover. Analyze. Create. Grow.</p>
-        <p class="hero-subtitle">YouTube Content Intelligence Platform</p>
-        <div class="badge-container">
-            <div class="badge safe-mode">
-                ✅ Safe Mode: {safe_mode}
-            </div>
-            <div class="badge">
-                🤖 AI: {ai_provider}
-            </div>
-            <div class="badge discovery">
-                🔍 {discovery_mode}
-            </div>
-        </div>
-    </div>
-    """.format(
-        safe_mode="On" if settings["safe_mode"] else "Off",
-        ai_provider=settings["ai_provider"].upper(),
-        discovery_mode=settings["discovery_mode"].replace("_", " ").title()
-    ), unsafe_allow_html=True)
+    # Main title
+    st.title("🎬 YT Auto")
+    st.caption("YouTube Content Intelligence Platform")
     
     # Create tabs
     tabs = st.tabs([
@@ -1321,12 +679,11 @@ def main():
         render_settings_tab(settings)
     
     # Footer
-    st.markdown("""
-    <div class="footer">
-        YT Auto v1.0 | Built with <span class="footer-heart">❤️</span> for content creators | 
-        Last updated: {datetime}
-    </div>
-    """.format(datetime=datetime.now().strftime('%Y-%m-%d %H:%M')), unsafe_allow_html=True)
+    st.divider()
+    st.caption(
+        "YT Auto v1.0 | Built with ❤️ for content creators | "
+        f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
 
 
 if __name__ == "__main__":
